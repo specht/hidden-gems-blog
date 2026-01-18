@@ -7,11 +7,12 @@ author_image: specht.jpg
 tags: ["Anleitung", "Blog"]
 ---
 
-# Wie schreibe ich einen Blog-Artikel?
+# Willkommen im Hidden-Gems-Blog
 
-Willkommen zu unserem Blog für den »Hidden Gems«-Wettbewerb! Hier teilen wir spannende Artikel, Tipps und Einblicke rund um den Wettbewerb. Egal, ob du deine Strategien oder Algorithmen vorstellst oder interessante Analysen teilen möchtet – dieser Blog ist der richtige Ort dafür.
+Willkommen zu unserem Blog für den »Hidden Gems«-Wettbewerb!
+Hier veröffentlichen Teilnehmerinnen und Teilnehmer ihre Beiträge: spannende Analysen, Strategieskizzen, Erklärungen zu Algorithmen oder Erfahrungsberichte aus dem Wettbewerb.
 
-In diesem ersten Beitrag erfährst du, wie du einen Artikel einreichen kannst.
+Wenn du selbst mitmachen möchtest, erfährst du in diesem ersten Beitrag, wie du eigene Artikel einreichen kannst.
 
 ## Repository forken und klonen
 
