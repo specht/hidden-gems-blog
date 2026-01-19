@@ -186,4 +186,4 @@ Hier eine kleine Visualisierung (braucht JavaScript):
 </details>
 
 ## Fazit
-Aktuell verwende ich 200 Walker mit jeweils 500 Iterationen pro möglicher Gem Zahl. Ich finde damit meist in 3-5 Messwerten/Moves die tatsächlichen Edelstein-Positionen. Klingt recht gut, keine Ahnung wie sich das mit anderen Methoden vergleicht. Mit ein paar Optimierungen am Code habe ich eine average response time des Bots von ca. 15 ms. In den letzten Scrims hat sich auch gezeigt, dass nur das finden der Gems alleine noch nicht ausreicht, um Top Scores zu erziehlen. Also heißt es: weiterbasteln!
+Aktuell verwende ich 200 Walker mit jeweils 500 Iterationen pro möglicher Gem Zahl. Ich finde damit meist in 3-5 Messwerten/Moves die tatsächlichen Edelstein-Positionen. Klingt recht gut, keine Ahnung wie sich das mit anderen Methoden vergleicht. Mit ein paar Optimierungen am Code habe ich eine average response time des Bots von ca. 15 ms. In den letzten Scrims hat sich auch gezeigt, dass nur das finden der Gems alleine noch nicht ausreicht, um Top-Scores zu erzielen. Also heißt es: weiterbasteln. Ich bin gespannt was noch kommt!
