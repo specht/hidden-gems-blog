@@ -107,17 +107,17 @@ void calculate_signal_levels(const float& r)
     }
 
     for (int dx = 0; dx < max; dx++) {
-    p.x = dx;
+        p.x = dx;
 
-    // i_min(dx, min) gibt das Minimum beider Parameter zurück
-    for (int dy = 0; dy < i_min(dx, min); dy++) {
+        // i_min(dx, min) gibt das Minimum beider Parameter zurück
+        for (int dy = 0; dy < i_min(dx, min); dy++) {
 
-        // es gilt stets p.x >= p.y >= 0
-        p.y = dy;
-        SIGNAL_LVL[l].level = signal_level(p, r);
-        SIGNAL_LVL[l].dist = p;
-        l++;
-    }
+            // es gilt stets p.x >= p.y >= 0
+            p.y = dy;
+            SIGNAL_LVL[l].level = signal_level(p, r);
+            SIGNAL_LVL[l].dist = p;
+            l++;
+        }
     }
     NSIGNAL_LVL = l;
 
