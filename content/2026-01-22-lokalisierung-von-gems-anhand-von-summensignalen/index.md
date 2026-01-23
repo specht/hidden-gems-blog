@@ -48,11 +48,13 @@ struct point {
     point(void);        // Konstruktor
     point(int, int);    // Konstruktor
     float dist2(void);  // Abstandsquadrat zum Ursprung
+    bool operator ==(const point&); // Gleichheit
 };
 
 point::point(void) { x = y = 0; }
 point::point(int x0, int y0) { x = x0; y = y0; }
 float point::dist2(void) { return (float)(x*x + y*y); }
+bool point::operator ==(const point& p) { return (p.x == x && p.y == y) ? true : false; }
 ```
 <div style='margin-top: -0.75em; margin-bottom: 1em; font-size: 85%;'>
 <em>Codefragment 1</em>
@@ -62,8 +64,8 @@ Die Struktur `SgnLvl` (»signal level«) beinhaltet die Einzelsignalstärken `le
 
 ```cpp
 struct SgnLvl {
-    float   level;  // Signalstärke A_i
-    point   dist;   // Vektor zur Signalquelle
+    float   level = 0.0;  // Signalstärke A_i
+    point   dist;         // Vektor zur Signalquelle
 };
 
 ```
@@ -91,7 +93,7 @@ die Signalstärke nach (1) berechnet. Der größte vorkommende Abstand verläuft
 
 void calculate_signal_levels(const float& r)
 {
-    point p, d;
+    point p;
     int max, min, l = 0;
 
     // bestimme die maximale und minimale Abmessung
@@ -182,12 +184,12 @@ Irgendwann taucht zum ersten Mal in einer Runde ein Signal auf. Dieses kann nur 
 
 ```cpp
 struct SgnEvn {
-    int     tick;   // Tick bei Erscheinen des Signals
-    float   level;  // Summensignalstärke, die per JSON mitgeteilt wurde
-    point   bot;    // aktuelle Position des Bots
-    int     nsrc;   // Anzahl der Einzelsignale dieses Signals
-    int     ndist;  // Anzahl der aktuellen Zielvektoren zu den Signalquellen
-    point   *dist;  // Zeiger auf das Array der Zielvektoren
+    int     tick = -1;      // Tick bei Erscheinen des Signals
+    float   level = 0.0;    // Summensignalstärke, die per JSON mitgeteilt wurde
+    point   bot;            // aktuelle Position des Bots
+    int     nsrc = -1;      // Anzahl der Einzelsignale dieses Signals
+    int     ndist = -1;     // Anzahl der aktuellen Zielvektoren zu den Signalquellen
+    point   *dist = NULL;   // Zeiger auf das Array der Zielvektoren
 };
 ```
 <div style='margin-top: -0.75em; margin-bottom: 1em; font-size: 85%;'>
@@ -235,6 +237,7 @@ void get_signal_levels(const float& lvl)
     SIGNAL_EVENT[NSIGNAL_EVENT].ndist = nd;
 
     ...
+    // Fortsetzung im Codefragment 17
 ```
 <div style='margin-top: -0.75em; margin-bottom: 1em; font-size: 85%;'>
 <em>Codefragment 9</em>
