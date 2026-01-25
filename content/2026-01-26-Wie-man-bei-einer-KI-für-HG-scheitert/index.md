@@ -1,7 +1,7 @@
 ---
 author: Arti
 author_bio: > 
-  Schüler.
+  Schüler
 author_image: car.jpg
 tags: ["Blog", "KI"]
 ---
@@ -44,7 +44,7 @@ TotalSeconds      : 2.5225242
 TotalMilliseconds : 2522.5242
 ```
 
-###### Nun kam bei mir die KlassenarbeitenPhase und ich musste das Projekt auf Hold legen... Zusätzlich waren die Finals nicht weit weg. Hab da zwar nicht so gut abgeschnitten, jedoch besser als in Stage 0, wo ich in den Scrims gecrasht bin
+<sub> Nun kam bei mir die KlassenarbeitenPhase und ich musste das Projekt auf Hold legen... Zusätzlich waren die Finals nicht weit weg. Hab da zwar nicht so gut abgeschnitten, jedoch besser als in Stage 0, wo ich in den Scrims gecrasht bin </sub>
 
 Zu spät war es für Stage 1, deswegen musste ich noch die Taktiken für Stage 2 implementieren. Dazu kamen auch die 2**48 Seeds (danke Seedcrackers für mehr Arbeit :D). Anscheinend wurde das Hashing von SHA256 zu PBKDF2-HMAC-SHA256 geändert, was auch etwas gedauert hat...
 
@@ -102,7 +102,7 @@ Epoche 3:
 Legende:
 1. Map Geometry: Irgendwie selbsterklärend
 2. Signalspur
-  * **Was es ist:** Dies ist der wichtigste Hinweis für die KI. Es zeigt den Verlauf der Sensormessungen des Bots
+  * **Was es ist:** Dies ist der wichtigste Hinweis für die KI; Es zeigt den Verlauf der Sensormessungen des Bots
   * **Die Farben:** Hellere Farben (Gelb/Weiß) zeigen eine höhere Signalstärke an, die auf diesen Tiles gemessen wurde, als der Bot dort stand
 3. Ground Truth (Das Label / Zielwert)
   * **Was es ist:** Das sind die Gems, dort wo der Runner sie gespawnt hat
@@ -138,7 +138,7 @@ Wenn wir das Ganze ausführen:
 
 Die Steuerungslogik unterscheidet zwischen NEURAL (Zielerfassung) und NEURAL_LOCK (PfadPersistenz). Dies verhindert Oszillationen, bei denen geringfügiges Signalrauschen dazu führen könnte, dass der Bot zwischen zwei Tiles mit hoher Wahrscheinlichkeit hin- und herstottert. Wie in den Logs zu sehen ist, "verfeinert" der Bot sein neuronales Ziel während der Bewegung etwa alle 10 bis 15 Ticks. Dadurch wird der Suchradius von einem allgemeinen Bereich auf eine spezifische Tile eingegrenzt, noch bevor die Gems im Fog überhaupt sichtbar sind. (10ms Response Time ist auch ziemlich gut)
 
-Der Bot erhält zum Beispiel in der heutigen Profile-Round (26.01.2026) nur wenig:
+Der Bot erhält zum Beispiel in der heutigen Profile Round (25.01.2026) nur wenig:
 ```shell
 PS C:\Users\Arti\CLionProjects\HiddenGems> ruby runner.rb main --max-tps 0 --seed 26pwn1er10 --profile
 Finished round 20 of 20...
@@ -158,4 +158,6 @@ Eigentlich ist die KI gut in der **Wahrnehmung** (sie "fühlt" die Gems gut), ab
 
 Wenn ich Zeit habe, werde ich vielleicht noch einen Versuch wagen, aber bis jetzt habe ich den Eindruck, dass es sich nicht lohnt
 
-###### Das einzige gute ist das ich einen schnellen runner habe :D
+<sub> Das einzige gute ist das ich einen schnellen runner habe :D </sub>
+
+-Arti
