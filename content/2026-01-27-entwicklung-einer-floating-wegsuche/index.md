@@ -8,13 +8,7 @@ tags: ["Wegfindung", "floating", "Algorithmus"]
 
 # Bau eines floating Algorithmus zur Wegfindung
 
-Algorithmen zur Wegfindung gibt es fast so viele wie Sandkörner im Ganges.
-
-Besonders bekannt und beliebt sind `BFS` und `A*`. 
-
-(Ich habe für den Blog nachgeschaut, wie diese arbeiten und ob sie nicht identisch sind.)
-
-Wir wollen hier gemeinsam einen einfachen Algorithmus entwickeln, der schneller ist als `BFS` und mehr Informationen bereitstellt.
+Algorithmen zur Wegfindung gibt es fast so viele wie Sandkörner im Ganges. Besonders bekannt und beliebt sind `BFS` und `A*`. (Ich habe für den Blog nachgeschaut, wie diese arbeiten und ob sie nicht identisch sind.) Wir wollen hier gemeinsam einen einfachen Algorithmus entwickeln, der schneller ist als `BFS` und mehr Informationen bereitstellt.
 
 *Hier kann man erkennen, wie ich an ein Problem herangehe und es löse. Heutzutage gibt es natürlich ganz andere Verfahren, weshalb ich mich schon einmal bei Michael Specht entschuldigen möchte.*
 
@@ -25,29 +19,25 @@ Ausgehend von einer Startposition soll der Algorithmus folgende Informationen li
 - In welche **Richtung** muss der Bot gehen.
 - Gibt es eine **zweite Richtung**, in der der Weg gleich weit ist?
 
-Er soll außerdem einfach für andere Bedürfnisse erweiterbar sein.
+Er soll außerdem einfach für andere Bedürfnisse erweiterbar sein. Es wird nur der **kürzeste** Weg berücksichtigt. Eine Bewertung des Weges ist nicht enthalten. Im Anschluss kann der Leser jedoch eine solche Bewertung oder andere Funktionen hinzufügen.
 
-Es wird nur der **kürzeste** Weg berücksichtigt.
-
-Eine Bewertung des Weges ist nicht enthalten. Im Anschluss kann der Leser jedoch eine solche Bewertung oder andere Funktionen hinzufügen.
-
-Warum zu jedem Feld?
+*Warum zu jedem Feld?*
 
 Wir lassen ihn einmal von der Bot-Position aus laufen und erhalten dann Informationen zu jedem Gem oder anderen Feldern, die uns interessieren, ohne erneut eine Wegfindung machen zu müssen.
 
-Warum nur erhalten wir nur den ersten Schritt?
+*Warum nur erhalten wir nur den ersten Schritt?*
 
 Bei jedem Tick ändert sich etwas, und dann berechne ich sowieso neu.
 
-Warum eine zweite Richtung?
+*Warum eine zweite Richtung?*
 
 Wenn unser Algorithmus sagt, dass der Bot zu dem Feld zurückgehen soll, von dem er kam (weil sich beispielsweise das Ziel geändert hat), könnten wir über eine andere Richtung neue Informationen über die Signale erhalten.
 
-## ein paar Definitionen
+## Ein paar Definitionen
 
 Zu Beginn überlegen wir, welche Daten wir wo und wie speichern möchten. Das hat den Vorteil, dass wir beim Coden nicht vergessen, ein Attribut auszufüllen.
 
-- `Pos` ist ein unsigned integer und enthält die X- und Y-Koordinate in der Form Y << 6 | X. Hier ist jedoch Vorsicht geboten, da eine Beschränkung auf eine Kartengröße von maximal 64 in X-Richtung besteht.
+- `Pos` ist ein unsigned integer und enthält die X- und Y-Koordinate in der Form `Y << 6 | X`. Hier ist jedoch Vorsicht geboten, da eine Beschränkung auf eine Kartengröße von maximal 64 in X-Richtung besteht.
 - `StartPosition` ist der Ausgangspunkt, von dem aus wir die Wege berechnen wollen.
 - `Karte` ist ein Vektor mit einer Größe von (Y-Größe der Karte mulipliziert mit 64). Er enthält alle Informationen, die wir über die Karte haben.
 - `WegKarte` ist ein temporärer Vektor. Er dient als Kopie der Karte zum „Bemalen”.
@@ -57,15 +47,15 @@ Zu Beginn überlegen wir, welche Daten wir wo und wie speichern möchten. Das ha
 
 Keine Sorge, hier können wir immer zurückschauen, wenn etwas benutzt wird.
 
-## einfacher Algorithmus
+## Einfacher Algorithmus
 
 Wir starten erst einmal ganz einfach ohne den zweiten Schritt und erweitern dann später.
 
-### Variablen Deklaration
+### Variablendeklaration
 
 Zunächst übertragen wir die Definitionen (siehe oben) in unsere Variablen.
 
-```C
+```c
 #define KARTENSIZE 64*40
 
 enum FeldTyp {WAND, BODEN, BESUCHT};
@@ -87,21 +77,17 @@ int PosDelta[] = {-64, -1, 64, 1, 0};
 Mit `PosDelta` können wir die Nachbarfelder bestimmen, sodass wir nicht alles viermal schreiben müssen.
 `Bewegung` wird nicht benutzt und ist nur zum Verständnis von PosDelta aufgeführt.
 
-Warum werden globale statt lokaler Variablen verwendet?
+*Warum werden globale statt lokaler Variablen verwendet?*
 
-Lokale Variablen sind schneller, da in einem kleineren Adressraum gearbeitet wird.
-
-Das Allokieren kostet bei den Größen Zeit. Außerdem enthalten die Strukturen viele Informationen, die wir später vielleicht nutzen möchten.
+Lokale Variablen sind schneller, da in einem kleineren Adressraum gearbeitet wird. Das Allokieren kostet bei den Größen Zeit. Außerdem enthalten die Strukturen viele Informationen, die wir später vielleicht nutzen möchten.
 
 *Schlechter Stil, Seiteneffekte. Man sollte Referenzen an die Prozeduren übergeben. Entschuldige, Michael*
 
 ### Der erste Wegpunkt wird berechnet
 
-Endlich ist die Buchhaltung erledigt und wir können uns dem Spaß widmen: dem Coden.
+Endlich ist die Buchhaltung erledigt und wir können uns dem Spaß widmen: dem Coden. Zunächst kopieren wir die Karte in WegKarte und berechnen unseren ersten Wegpunkt.
 
-Zunächst kopieren wir die Karte in WegKarte und berechnen unseren ersten Wegpunkt.
-
-```C
+```c
 #define KEINSCHRITT 4
 
 void WegBerechnung (Pos Startposition) {
@@ -126,26 +112,17 @@ void WegBerechnung (Pos Startposition) {
 }
 ```
 
-`WPakt` ist der aktuelle Pointer im Vektor `Puffer`.
-`WPmax` ist der letzte Eintrag in `Puffer`.
+`WPakt` ist der aktuelle Pointer im Vektor `Puffer`. `WPmax` ist der letzte Eintrag in `Puffer`.
 
-In `WegKarte` haben wir das Feld mit `BESUCHT` markiert, weil es bereits berechnet wurde.
+In `WegKarte` haben wir das Feld mit `BESUCHT` markiert, weil es bereits berechnet wurde. Im `Puffer` wird es gespeichert, da von hier aus weitere Felder erreichbar sein könnten.
 
-Im `Puffer` wird es gespeichert, da von hier aus weitere Felder erreichbar sein könnten.
-
-Auf die Initialisierung von `Wege` wird verzichtet, da dies Performance kostet und wir später nur die Felder abfragen, die betreten werden können (Karte[p]==BODEN). Andere Felder können alte und falsche Werte enthalten, was nicht weiter stört.
+Auf die Initialisierung von `Wege` wird verzichtet, da dies Performance kostet und wir später nur die Felder abfragen, die betreten werden können (`Karte[p]==BODEN`). Andere Felder können alte und falsche Werte enthalten, was nicht weiter stört.
 
 ### Die Nachbarfelder
 
-Vom `Startpunkt` aus sind vier Felder erreichbar: Nord, Süd, Ost und West. (Siehe auch: `Bewegung`).
+Vom `Startpunkt` aus sind vier Felder erreichbar: Nord, Süd, Ost und West. (Siehe auch: `Bewegung`). Das fällt uns sofort ein. Wir könnten jedes einzeln codieren oder es über den Vektor `PosDelta` geschickt adressieren. Also berechnen wir die vier Nachbarfelder vom `Startpunkt`.
 
-Das fällt uns sofort ein.
-
-Wir könnten jedes einzeln codieren oder es über den Vektor `PosDelta` geschickt adressieren.
-
-Also berechnen wir die vier Nachbarfelder vom `Startpunkt`.
-
-```C
+```c
   for (i = 3; i >= 0; i--) {
     Pos p = Puffer[WPakt] + PosDelta[i];
     if (WegKarte[p] == BODEN) {
@@ -161,23 +138,17 @@ Also berechnen wir die vier Nachbarfelder vom `Startpunkt`.
 
 Das war doch einfach! Genauso wie bei der `Startposition`.
 
-Wir haben `Distanz` und `Schritt` angepasst.
-
-`WPmax` wird für jedes gültige Feld erhöht.
-
-Am Schluss wird `WPakt` erhöht, weil wir den ersten Punkt in der Warteliste verarbeitet haben.
+Wir haben `Distanz` und `Schritt` angepasst. `WPmax` wird für jedes gültige Feld erhöht. Am Schluss wird `WPakt` erhöht, weil wir den ersten Punkt in der Warteliste verarbeitet haben.
 
 *Anmerkung: Die For-Schleife auf 0 laufen zu lassen, ist um ein bis zwei Maschinenbefehle schneller. Hier kann der Compiler die Reihenfolge nicht selbstständig umstellen, da sich sonst die Reihenfolge im Puffer ändern würde.*
 
 ### Die restlichen Felder
 
-Nun fehlen nur noch die anderen Felder. Ihr ahnt es schon: Es geht genauso weiter.
-
-Ein Feld aus `Puffer` wird genommen und die Nachbarfelder werden verarbeitet.
+Nun fehlen nur noch die anderen Felder. Ihr ahnt es schon: Es geht genauso weiter. Ein Feld aus `Puffer` wird genommen und die Nachbarfelder werden verarbeitet.
 
 Dies wiederholen wir in einer Schleife, bis kein unverarbeitetes Feld mehr im Puffer vorhanden ist.
 
-```C
+```c
   while (WPakt <= WPmax) {
     Pos p0 = Puffer[WPakt];
     int dist = Wege[p0].Distanz + 1;
@@ -199,9 +170,7 @@ Dies wiederholen wir in einer Schleife, bis kein unverarbeitetes Feld mehr im Pu
 ```
 *Anmerkung: Dies ist ein zusätzlicher Code Block. Nicht den Code Block der Nachbarfelder des Startpunktes überschreiben.*
 
-Die `Distanz` wird nun vom Vorgänger-Feld berechnet und der Schritt übernommen. Wir speichern den ersten Schritt von der Startposition und nicht irgendeinen Zwischenschritt.
-
-Die Überprüfung, ob die Position p noch in der Karte ist, können wir bei Hidden Gems weglassen, da wir immer eine mit Wänden umrandete Karte haben. Das spart reine Performance.
+Die `Distanz` wird nun vom Vorgänger-Feld berechnet und der Schritt übernommen. Wir speichern den ersten Schritt von der Startposition und nicht irgendeinen Zwischenschritt. Die Überprüfung, ob die Position p noch in der Karte ist, können wir bei Hidden Gems weglassen, da wir immer eine mit Wänden umrandete Karte haben. Das spart reine Performance.
 
 Wir nutzen hier aus, dass der Puffer durch das Füllen nach Distanz sortiert ist. (Wir fügen nur Werte hinzu, deren Distanz dem letzten Wert im Puffer gleich oder größer ist.) Dadurch brauchen wir keine Überprüfung der Distanz.
 
@@ -211,21 +180,14 @@ Jetzt sind wir im Flow und es macht Spaß. Was kommt jetzt?
 
 Das war's schon. Schade.
 
-Eine einfache Wegberechnung auf Floating-Basis ist fertig.
-
-Sie liefert die kürzeste Distanz und den ersten Schritt von der Startposition zu jedem erreichbaren Feld.
-
-Das Attribut `SchrittAlternativ` ist nicht gefüllt.
-
-Unser Ziel war es, einen alternativen Startpunkt zu erhalten. Dies werden wir in der ersten Erweiterung umsetzen.
+Eine einfache Wegberechnung auf Floating-Basis ist fertig. Sie liefert die kürzeste Distanz und den ersten Schritt von der Startposition zu jedem erreichbaren Feld. Das Attribut `SchrittAlternativ` ist nicht gefüllt. Unser Ziel war es, einen alternativen Startpunkt zu erhalten. Dies werden wir in der ersten Erweiterung umsetzen.
 
 ### Unterschied zu BFS
 
 Wir haben den Algorithmus entwickelt, einfach durch Nachdenken ohne Wissen über BFS. ;-)
 
-Das Ganze sieht doch aus wie der BFS.
+Das Ganze sieht doch aus wie der BFS. Ähnlich, ja, weil es sich bei beiden um Floating-Algorithmen handelt. Wir sehen jedoch Unterschiede zum BFS:
 
-Ähnlich, ja, weil es sich bei beiden um Floating-Algorithmen handelt. Wir sehen jedoch Unterschiede zum BFS:
 - BFS liefert den gesamten Weg zu einem Zielfeld. Wir hingegen nur die Distanz und den ersten Schritt zu jedem Feld.
 - BFS speichert die Position und die Referenz zum Vorgängerfeld in einem Puffer. Die Distanz und der erste Schritt müssen später durch Rückrechnen des Weges berechnet werden. Wir speichern keinen Pointer, da wir nicht zurückrechnen müssen.
 - BFS nutzt die Karte, um zu überprüfen, ob das Feld „BODEN” ist, und führt eine weitere Überprüfung durch, ob das Feld bereits verarbeitet wurde. Wir nutzen nur einen Vektor, denn „BESUCHT” ist ungleich „BODEN”.
@@ -233,15 +195,14 @@ Das Ganze sieht doch aus wie der BFS.
 
 Unser Algorithmus ist somit schneller als BFS.
 
-## erste Erweiterung
+## Erste Erweiterung
 
 In diesem Abschnitt lernen wir, wie sich der Algorithmus einfach erweitern lässt.
 
-Eigentlich wollten wir doch auch wissen, ob es noch andere Richtungen mit gleicher Entfernung zum Zielfeld gibt und wenn ja, welche das sind.
-
-Nun kommt wieder der schwierige Teil: Nachdenken, Planen, Entscheiden.
+Eigentlich wollten wir doch auch wissen, ob es noch andere Richtungen mit gleicher Entfernung zum Zielfeld gibt und wenn ja, welche das sind. Nun kommt wieder der schwierige Teil: Nachdenken, Planen, Entscheiden.
 
 Auf einer Karte ohne Wände:
+
 - Liegt das Zielfeld genau im Norden, gibt es nur einen ersten Schritt „Nord” auf dem kürzesten Weg.
 - Liegt das Zielfeld im Nordosten, gibt es zwei Möglichkeiten.
 
@@ -249,13 +210,11 @@ Für die anderen Richtungen ist es identisch.
 
 Mit Wänden sieht es anders aus. Es könnte einen Weg nach Nordost um die Mauer geben, der genauso lang ist wie nach Südosten oder sogar Südwesten. Somit könnten alle vier Schritte möglich sein.
 
-
 Nachdenken fertig, also planen. Was wollen wir später?
 
 In `Schritt` steht die Bewegung, die der Bot ausführen soll. Wenn es ein Schritt zurück wäre, würde ich keine neuen Informationen über die Signale erhalten. Es reicht mir also eine Alternative.
 
-
-Entscheidung:
+**Entscheidung:**
 
 Im Feld `SchrittAlternativ` soll ein möglicher alternativer Schritt stehen. Gleiche Kodierung wie `Schritt`.
 Hätten wir uns für alle Schritte entschieden, würden wir `int Schritt` durch `Bool Schritt[4]` ersetzen. Dies überlasse ich dem geneigten Leser.
@@ -264,7 +223,7 @@ Hätten wir uns für alle Schritte entschieden, würden wir `int Schritt` durch 
 
 Beim Startfeld stetzen wir den alternaitven Schritt `SchrittAlternativ` auf `KEINSCHRITT`.
 
-```C
+```c
   Wege[StartPosition].Distanz = 0;
   Wege[StartPosition].Schritt = KEINSCHRITT;
   WegKarte[StartPosition] = BESUCHT;
@@ -281,7 +240,7 @@ Die Nachbarfelder können nur von der Startposition in einem Schritt erreicht we
 
 Auch hier gibt es keinen alternativen Schritt.
 
-```C
+```c
     if (WegKarte[p] == BODEN) {
       Wege[p].Distanz = 1;
       Wege[p].Schritt = i;
@@ -297,7 +256,7 @@ Auch hier gibt es keinen alternativen Schritt.
 
 Bei den restlichen Felder wird `SchrittAlternativ` vom Vorgänger übernommen.
 
-```C
+```c
     int dist = Wege[p0].Distanz + 1;
     int schritt = Wege[p0].Schritt;
     // neu
@@ -318,17 +277,13 @@ Bei den restlichen Felder wird `SchrittAlternativ` vom Vorgänger übernommen.
     }
 ```
 
-Aber halt! Andere Felder könnten von mehreren Seiten aus erreicht werden.
-
-In diesem Fall steht in der `WegKarte` der Wert `BESUCHT`.
+Aber halt! Andere Felder könnten von mehreren Seiten aus erreicht werden. In diesem Fall steht in der `WegKarte` der Wert `BESUCHT`.
 
 Der `Puffer` ist nach Distanz sortiert. Das bedeutet, dass ein bereits sortiertes Feld eine Distanz kleiner oder gleich hat. Da uns kein längerer Weg interessiert, ist nur „gleich lang” relevant.
 
-Die Attribute außer „SchrittAlternativ” sind bereits gesetzt. Wir füllen also nur dieses aus.
+Die Attribute außer „SchrittAlternativ” sind bereits gesetzt. Wir füllen also nur dieses aus. Da uns nur ein alternativer Schritt interessiert, können wir diesen überspringen, wenn er bereits gesetzt ist.
 
-Da uns nur ein alternativer Schritt interessiert, können wir diesen überspringen, wenn er bereits gesetzt ist.
-
-```C
+```c
       if (WegKarte[p] == BODEN) {
       ...
       } else
@@ -352,53 +307,34 @@ Um das gleiche Ergebnis für nur ein Zielfeld zu erhalten, müssten wir `A*` vie
 
 Leider sind wir schon wieder am Ende.
 
-## eine andere Erweiterung (komplette Wege)
+## Eine andere Erweiterung (komplette Wege)
 
-Das hat doch Spaß gemacht bis jetzt. *oh Drohung, ich höre dich kommen*
+Das hat doch Spaß gemacht bis jetzt (*oh Drohung, ich höre dich kommen*).
 
-Für den Bot ist der Algorithmus super: Er ist schnell und leistet alles, was er braucht.
+Für den Bot ist der Algorithmus super: Er ist schnell und leistet alles, was er braucht. Aber der arme Programmierer auf der anderen Seite des Bildschirms will etwas sehen und debuggen.
 
-Aber der arme Programmierer auf der anderen Seite des Bildschirms will etwas sehen und debuggen.
-
-Da haben `BFS` und `A*` die große Stärke, dass sie den gesamten Weg anzeigen.
-
-Da die letzte Erweiterung so einfach war, warum nicht den Algorithmus erweitern und auch die kompletten Wege speichern? *(Für alle Felder einen Weg vom Startfeld speichern – und das bei den gestiegenen Preisen für RAM!)*
+Da haben `BFS` und `A*` die große Stärke, dass sie den gesamten Weg anzeigen. Da die letzte Erweiterung so einfach war, warum nicht den Algorithmus erweitern und auch die kompletten Wege speichern? *(Für alle Felder einen Weg vom Startfeld speichern – und das bei den gestiegenen Preisen für RAM!)*
 
 ### Ran ans Werk
 
 Was haben wir, was brauchen wir?
 
-Aus `Puffer[WPakt]` haben wir `Puffer[WPmax]` erstellt.
-
-Das ist doch eine Liste und ruft förmlich nach einem Pointer zum Vorgänger.
-
-Wir erweitern also `Puffer` um das Attribut `Parent`.
+Aus `Puffer[WPakt]` haben wir `Puffer[WPmax]` erstellt. Das ist doch eine Liste und ruft förmlich nach einem Pointer zum Vorgänger. Wir erweitern also `Puffer` um das Attribut `Parent`.
 
 
 **Halt! Stop! Wir sind im Flow gefangen.**
 
 Wir haben etwas wichtiges vergessen: Nachdenken.
 
-Beinahe hätten wir unseren schönen Algorithmus in `BFS` verwandelt, mit all seinen Nachteilen.
-Wir hätten einen Referenz-Vektor auf `Puffer` erstellt, ...
+Beinahe hätten wir unseren schönen Algorithmus in `BFS` verwandelt, mit all seinen Nachteilen. Wir hätten einen Referenz-Vektor auf `Puffer` erstellt, ...
 
-
-`p0` ist unsere Position, aus der wir die Felder `p` erstellen.
-
-In `Wege[p]` muss also eine Referenz auf `p0` stehen.
-
-`Parent` für Schritt und `ParentAlternativ` für den SchrittAlternativ.
-
-
-Das Attribut `Parent` ist einfach zu bestimmen. Es ist `p0` bei der Erstellung.
-
-Das Attribut `ParentAlternativ` ist schwieriger.
+`p0` ist unsere Position, aus der wir die Felder `p` erstellen. In `Wege[p]` muss also eine Referenz auf `p0` stehen. `Parent` für Schritt und `ParentAlternativ` für den SchrittAlternativ. Das Attribut `Parent` ist einfach zu bestimmen. Es ist `p0` bei der Erstellung. Das Attribut `ParentAlternativ` ist schwieriger.
 
 Die Nachbarfelder des Startpunkts haben keinen alternativen Schritt. Wenn wir später den Weg für den alternativen Schritt wissen wollen, nutzen wir `ParentAlternativ` als Pointer. Er muss also auch bei den Nachbarfeldern auf die Startposition zeigen.
 
-Allgemein sind `Parent` und `ParentAlternativ` immer gleich, bis auf eine Ausnahme. Wird `SchrittAlternativ` verändert, muss `ParentAlternativ` auf dieses `p0` gesetzt werden. 
+Allgemein sind `Parent` und `ParentAlternativ` immer gleich, bis auf eine Ausnahme. Wird `SchrittAlternativ` verändert, muss `ParentAlternativ` auf dieses `p0` gesetzt werden.
 
-```C
+```c
 typedef struct {
   int Distanz;
   int Schritt;
@@ -434,11 +370,7 @@ Ich sehe, ihr habt kurz gedacht: Da ist ein Bug. Wenn in der letzten Zeile `schr
 
 ### Ende
 
-Das war es schon. So wird für jedes Feld der komplette Weg platzsparend gespeichert.
-
-Hier wird deutlich, warum die Vektoren global definiert wurden.
-
-So können wir jederzeit darauf zugreifen.
+Das war es schon. So wird für jedes Feld der komplette Weg platzsparend gespeichert. Hier wird deutlich, warum die Vektoren global definiert wurden -- so können wir jederzeit darauf zugreifen.
 
 # Anregungen
 
