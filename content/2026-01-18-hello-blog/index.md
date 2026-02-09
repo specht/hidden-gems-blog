@@ -61,6 +61,18 @@ Das Datum wird automatisch aus dem Verzeichnisnamen übernommen.
 
 ![Beschreibung des Bildes](test.png)
 
+#### Replays
+
+Du kannst auch Replays deiner Spiele einbinden, um deine Artikel noch anschaulicher zu machen:
+
+<div class='f ansi-player-auto-pickup mb-3' data-url='demo-index-8723.json.gz' data-autoplay='false'>
+    <div class='ansi-player-screen'></div>
+</div>
+
+<div class='alert alert-warning'>
+    Achte darauf, dass du nicht nur die `.json.gz`-Datei, sondern auch die dazugehörige `-poster.json.gz`-Datei benötigst, damit die Vorschau korrekt funktioniert.
+</div>
+
 #### HTML
 
 Du kannst auch HTML-Tags verwenden, um deinen Artikel weiter zu gestalten, z. B. mit Tabellen:

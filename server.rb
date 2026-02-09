@@ -212,6 +212,10 @@ server.mount_proc "/" do |req, res|
     if File.file?(local)
       res.status = 200
       res["Content-Type"] = content_type_for(local)
+      if local.end_with?(".json.gz")
+        res["Content-Encoding"] = "gzip"
+        res['Content-Type'] = "application/json"
+      end
       res.body = File.binread(local)
       next
     else
