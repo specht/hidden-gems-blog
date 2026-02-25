@@ -59,7 +59,7 @@ Man nimmt eine Liste mit Feldern (anfangs sind alle Felder enthalten) und berech
 Extremwerte des Rauschens können dazu führen, dass die Liste leer wird. In diesem Fall kann das Signal als Extremwert ignoriert und die Liste des letzten Ticks verwendet werden. Um sicherzugehen, dass das Rauschen des letzten Ticks das Gem nicht bereits ausgefiltert hat, kann auf den vorletzten Tick zurückgegriffen werden.
 
 
-## F) adaptive Filter
+## F) Adaptive Filter
 
 Anders als bei Strategie E) werden zwei Listen parallel geführt, die unterschiedlich streng filtern.
 
