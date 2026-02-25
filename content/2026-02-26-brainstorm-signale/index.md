@@ -107,7 +107,7 @@ Einige Strategien funktionieren besser, wenn man Wände und/oder Sicht ignoriert
 Die Bewegung des Bots ist wichtig, um einen guten, kleinen Zielbereich zu erhalten. Anfangs ist er ein Kreisring, doch schnell wird er zu einer Mondsichel. Es ist nicht einfach, die Mondsichel in einen schönen kleinen Bereich zu verwandeln. Der Bot muss sich schließlich auf die anderen Gems bewegen.
 
 
-## Abschluß
+## Abschluss
 
 Ich habe die Strategien C) bis H) programmiert und in meinen Test-Bot eingebaut. (Ich liebe das Programmieren.) Die Strategien D) bis G) sind sehr einfach und schnell erstellt. C) und H) sind mittlere Komplexität. Der Test-Bot hat die Wegfindung und das Zielhandling aus Stage 2, und ist lediglich um das Anlaufen von Ziel-Bereichen erweitert.
 
