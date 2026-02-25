@@ -25,7 +25,7 @@ Der Mittelwert kann jedoch nur berechnet werden, wenn der Gem seine volle Signal
 Zudem befinden sich mehr als ein Gem auf der Karte, sodass das Stehenbleiben das Einsammeln der anderen Gems verhindert.
 
 
-## B) Trigometrie
+## B) Trigonometrie
 
 Der Bot läuft von A aus geradeaus nach B und dann entweder rechts oder links nach C. In Stage 2 reicht jeweils ein Schritt. In Stage 3 sind hingegen mehrere Schritte von A nach B und von B nach C erforderlich. An den Punkten A, B und C werden die Kreisringe berechnet, deren Schnittmenge den Zielbereich bildet. Zur Verfeinerung können die Zwischenpunkte hinzugezogen werden.
 
@@ -52,7 +52,7 @@ Dies ist vergleichbar mit der Vorberechnung aus C). Auch hier ist die Rechenzeit
 Wenn nur das Feld mit der höchsten Wahrscheinlichkeit gewählt wird, kann es zu lustigen Effekten kommen. So lief mein Bot beispielsweise häufig einen Kreis mit einem Durchmesser von vier oder fünf Feldern ab, bevor er zu dem Gem lief. Mit etwas Geschick kann man jedoch ein Intervall bestimmen, dessen Felder den Zielbereich bilden. Dieser wird dann immer kleiner.
 
 
-## E) einfacher Filter
+## E) Einfacher Filter
 
 Man nimmt eine Liste mit Feldern (anfangs sind alle Felder enthalten) und berechnet für jedes Feld den Fehler, der hier auftreten würde, wenn ein Gem vorhanden wäre. Wird ein zuvor berechneter Grenzwert überschritten, wird das Feld aus der Liste entfernt. Die Liste stellt somit den Zielbereich dar.
 
@@ -75,7 +75,7 @@ Die Felder werden in verschiedene Güteklassen (zum Beispiel I bis X) eingeteilt
 Zu Beginn wird jedes Feld einer Klasse zugeordnet. In jeder weiteren Berechnung (Tick) kann ein Feld seine Klasse behalten oder um eine Klasse auf- bzw. absteigen. Dadurch werden Schwankungen der Rauschstärke abgefangen. Um den Zufluss in die höchste Klasse so klein wie möglich und so groß wie nötig zu halten, gelten für den Aufstieg strengere Kriterien.
 
 
-## H) Grosse Felder
+## H) Große Felder
 
 Die genaue Position des Gems muss nicht bekannt sein, um ihn einzusammeln. Eine ungefähre Position reicht aus, denn wenn der Bot dort ankommt, erkennt er ihn. Anstelle der einzelnen Felder werden jetzt 3x3-Feld-Quadrate zusammengefasst. Andere Größen sind auch möglich. Es gibt wieder zwei Möglichkeiten: überlappende oder nicht überlappende Quadrate.
 
@@ -102,7 +102,7 @@ Wände können den Zielbereich weiter eingrenzen. Leider können Wände auch nac
 Einige Strategien funktionieren besser, wenn man Wände und/oder Sicht ignoriert, andere nicht.
 
 
-## Bewegunng
+## Bewegung
 
 Die Bewegung des Bots ist wichtig, um einen guten, kleinen Zielbereich zu erhalten. Anfangs ist er ein Kreisring, doch schnell wird er zu einer Mondsichel. Es ist nicht einfach, die Mondsichel in einen schönen kleinen Bereich zu verwandeln. Der Bot muss sich schließlich auf die anderen Gems bewegen.
 
